@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, forwardRef, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  EventEmitter,
+  forwardRef,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import imageCompression from 'browser-image-compression';
 
@@ -19,12 +28,14 @@ export class UploadImage {
   value: string | undefined;
   onChange = (value: any) => {};
   onTouched = () => {};
-  private imageSource = signal<string>('');
+  protected imageSource = signal<string>('');
   exifData = signal<ExifData | null>(null);
   isLoadingExif = signal<boolean>(false);
   // Computed signal (this is what you're using in the template)
-  uploadedImage = computed(() => this.imageSource());
-
+  @Output() imageUploaded = new EventEmitter<string>();
+  @Input() set uploadedImage(value: string | null) {
+    this.imageSource.set(value ?? '');
+  }
   async onImageUpload(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
 
@@ -46,10 +57,19 @@ export class UploadImage {
         const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
 
-        reader.onload = async (e: ProgressEvent<FileReader>) => {
-          this.imageSource.set(e.target?.result as string);
-          this.value = e.target?.result as string;
-          this.onChange(this.value);
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          const result = e.target?.result;
+
+          if (typeof result !== 'string') {
+            return;
+          }
+
+          this.imageSource.set(result);
+
+          this.value = result;
+          this.onChange(result);
+
+          this.imageUploaded.emit(result);
         };
 
         reader.readAsDataURL(compressedFile);

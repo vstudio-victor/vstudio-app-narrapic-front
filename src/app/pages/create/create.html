@@ -2,9 +2,10 @@
   <!-- Top bar -->
   <header class="border-b border-slate-100 bg-white">
     <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-     <a routerLink="/"><div class="flex items-center gap-2">
-        <img class="h-20 w-auto" src="../../assets/images/logo1.png" alt="" />
-      </div></a>
+      <a routerLink="/"
+        ><div class="flex items-center gap-2">
+          <img class="h-20 w-auto" src="../../assets/images/logo1.png" alt="" /></div
+      ></a>
       <div class="flex items-center gap-2">
         @for (s of [1, 2, 3, 4, 5]; track s) {
           <span
@@ -19,7 +20,9 @@
           ></span>
         }
       </div>
-      <a routerLink="/dashboard" class="text-sm font-medium text-slate-400 hover:text-slate-600">Exit</a>
+      <a routerLink="/dashboard" class="text-sm font-medium text-slate-400 hover:text-slate-600"
+        >Exit</a
+      >
     </div>
   </header>
 
@@ -42,20 +45,10 @@
           />
 
           <div class="grid gap-6 md:grid-cols-[1.6fr_1fr]">
-            <!-- Dropzone -->
-            <div
-              class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-6 py-12 text-center transition hover:border-violet-300"
-            >
-              <span class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M17 8l-5-5-5 5" /><path d="M12 3v12" />
-                </svg>
-              </span>
-              <p class="text-sm font-semibold text-slate-700">Drag &amp; drop your image here</p>
-              <p class="mt-1 text-xs text-slate-400">or click to browse</p>
-              <p class="mt-4 text-xs text-slate-300">JPG, PNG, WEBP up to 20MB</p>
-            </div>
+            <ltz-upload-image
+              [uploadedImage]="uploadedImage()"
+              (imageUploaded)="uploadedImage.set($event)"
+            ></ltz-upload-image>
 
             <!-- Tips -->
             <div>
@@ -63,9 +56,20 @@
               <ul class="space-y-3">
                 @for (tip of uploadTips; track tip) {
                   <li class="flex items-center gap-2 text-sm text-slate-500">
-                    <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                      <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                    <span
+                      class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+                    >
+                      <svg
+                        class="h-3 w-3"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
                     </span>
                     {{ tip }}
                   </li>
@@ -75,8 +79,18 @@
           </div>
 
           <div class="mt-8 flex justify-end gap-3">
-            <a routerLink="/dashboard" class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
-            <button (click)="next()" class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700">Continue</button>
+            <a
+              routerLink="/dashboard"
+              class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+              >Cancel</a
+            >
+            <button
+              [disabled]="uploadedImage() == null"
+              (click)="next()"
+              class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:bg-slate-300"
+            >
+              Continue
+            </button>
           </div>
         </div>
       }
@@ -88,16 +102,27 @@
 
           <div class="grid gap-8 md:grid-cols-[1.4fr_1fr]">
             <img
-              src="https://picsum.photos/seed/luxembourg-1/700/520"
+              [src]="uploadedImage() || 'https://picsum.photos/700/520'"
               alt="Artwork preview"
               class="aspect-[4/3] w-full rounded-xl object-cover"
             />
 
             <div>
               <div class="mb-5 flex items-center gap-2">
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9L12 21l1.9-6.4 5.8-1.9-5.8-1.9z" /></svg>
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9L12 21l1.9-6.4 5.8-1.9-5.8-1.9z" />
+                  </svg>
                 </span>
                 <h2 class="text-base font-bold text-slate-800">AI Detection</h2>
               </div>
@@ -107,7 +132,6 @@
                   <p class="text-xs font-medium text-slate-400">Image Type</p>
                   <p class="mt-0.5 font-semibold text-slate-800">Landscape Photography</p>
                 </div>
-
 
                 <div>
                   <p class="text-xs font-medium text-slate-400">Suggested Product</p>
@@ -123,7 +147,10 @@
                   <p class="mb-2 text-xs font-medium text-slate-400">Colors Detected</p>
                   <div class="flex gap-2">
                     @for (color of detectedColors; track color) {
-                      <span class="h-6 w-6 rounded-md ring-1 ring-slate-200" [style.background]="color"></span>
+                      <span
+                        class="h-6 w-6 rounded-md ring-1 ring-slate-200"
+                        [style.background]="color"
+                      ></span>
                     }
                   </div>
                 </div>
@@ -132,8 +159,18 @@
           </div>
 
           <div class="mt-8 flex justify-end gap-3">
-            <button (click)="back()" class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Back</button>
-            <button (click)="next()" class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700">Continue</button>
+            <button
+              (click)="back()"
+              class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              Back
+            </button>
+            <button
+              (click)="next()"
+              class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700"
+            >
+              Continue
+            </button>
           </div>
         </div>
       }
@@ -143,7 +180,9 @@
         <div class="animate-fade-in rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
           <p class="mb-1 text-sm text-slate-400">Step 3 of 5</p>
           <h1 class="text-xl font-extrabold text-slate-900">What are you creating?</h1>
-          <p class="mt-1 text-sm text-slate-400">This helps us generate the most relevant content.</p>
+          <p class="mt-1 text-sm text-slate-400">
+            This helps us generate the most relevant content.
+          </p>
 
           <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @for (type of productTypes; track type.label) {
@@ -158,17 +197,52 @@
               >
                 <span
                   class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg"
-                  [class]="selectedProduct() === type.label ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-500'"
+                  [class]="
+                    selectedProduct() === type.label
+                      ? 'bg-violet-600 text-white'
+                      : 'bg-slate-100 text-slate-500'
+                  "
                 >
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     @switch (type.icon) {
-                      @case ('postcard') { <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /> }
-                      @case ('frame') { <rect x="3" y="3" width="18" height="18" rx="2" /><rect x="7" y="7" width="10" height="10" rx="1" /> }
-                      @case ('camera') { <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z" /><circle cx="12" cy="13" r="3" /> }
-                      @case ('download') { <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /> }
-                      @case ('brush') { <path d="M9.06 11.9 18 3a2.12 2.12 0 0 1 3 3l-8.9 8.94" /><path d="M7 14a4 4 0 0 0-4 4c0 1.5-1 2-2 2 1 1.5 2.5 2 4 2a4 4 0 0 0 4-4 2 2 0 0 0-2-2z" /> }
-                      @case ('dots') { <circle cx="5" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /> }
+                      @case ('postcard') {
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <path d="M2 10h20" />
+                      }
+                      @case ('frame') {
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <rect x="7" y="7" width="10" height="10" rx="1" />
+                      }
+                      @case ('camera') {
+                        <path
+                          d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"
+                        />
+                        <circle cx="12" cy="13" r="3" />
+                      }
+                      @case ('download') {
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <path d="m7 10 5 5 5-5" />
+                        <path d="M12 15V3" />
+                      }
+                      @case ('brush') {
+                        <path d="M9.06 11.9 18 3a2.12 2.12 0 0 1 3 3l-8.9 8.94" />
+                        <path
+                          d="M7 14a4 4 0 0 0-4 4c0 1.5-1 2-2 2 1 1.5 2.5 2 4 2a4 4 0 0 0 4-4 2 2 0 0 0-2-2z"
+                        />
+                      }
+                      @case ('dots') {
+                        <circle cx="5" cy="12" r="1.5" />
+                        <circle cx="12" cy="12" r="1.5" />
+                        <circle cx="19" cy="12" r="1.5" />
+                      }
                     }
                   </svg>
                 </span>
@@ -179,8 +253,18 @@
           </div>
 
           <div class="mt-8 flex justify-end gap-3">
-            <button (click)="back()" class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Back</button>
-            <button (click)="next()" class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700">Continue</button>
+            <button
+              (click)="back()"
+              class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              Back
+            </button>
+            <button
+              (click)="next()"
+              class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700"
+            >
+              Continue
+            </button>
           </div>
         </div>
       }
@@ -205,23 +289,68 @@
               >
                 <span
                   class="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-md border transition"
-                  [class]="opt.selected ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 bg-white'"
+                  [class]="
+                    opt.selected
+                      ? 'border-violet-600 bg-violet-600 text-white'
+                      : 'border-slate-300 bg-white'
+                  "
                 >
                   @if (opt.selected) {
-                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                    <svg
+                      class="h-3 w-3"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
                   }
                 </span>
-                <span class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <span
+                  class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-500"
+                >
+                  <svg
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     @switch (opt.icon) {
-                      @case ('tag') { <path d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" /><circle cx="7" cy="7" r="1.2" fill="currentColor" /> }
-                      @case ('pin') { <path d="M12 21s-6-5.7-6-10a6 6 0 0 1 12 0c0 4.3-6 10-6 10Z" /><circle cx="12" cy="11" r="2" /> }
-                      @case ('instagram') { <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="3.5" /><circle cx="17" cy="7" r="1" fill="currentColor" /> }
-                      @case ('text') { <path d="M4 7h16M4 12h16M4 17h10" /> }
-                      @case ('image') { <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21" /> }
-                      @case ('chart') { <path d="M3 3v18h18" /><rect x="7" y="11" width="3" height="6" /><rect x="12" y="7" width="3" height="10" /><rect x="17" y="13" width="3" height="4" /> }
+                      @case ('tag') {
+                        <path
+                          d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"
+                        />
+                        <circle cx="7" cy="7" r="1.2" fill="currentColor" />
+                      }
+                      @case ('pin') {
+                        <path d="M12 21s-6-5.7-6-10a6 6 0 0 1 12 0c0 4.3-6 10-6 10Z" />
+                        <circle cx="12" cy="11" r="2" />
+                      }
+                      @case ('instagram') {
+                        <rect x="3" y="3" width="18" height="18" rx="5" />
+                        <circle cx="12" cy="12" r="3.5" />
+                        <circle cx="17" cy="7" r="1" fill="currentColor" />
+                      }
+                      @case ('text') {
+                        <path d="M4 7h16M4 12h16M4 17h10" />
+                      }
+                      @case ('image') {
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="9" cy="9" r="2" />
+                        <path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21" />
+                      }
+                      @case ('chart') {
+                        <path d="M3 3v18h18" />
+                        <rect x="7" y="11" width="3" height="6" />
+                        <rect x="12" y="7" width="3" height="10" />
+                        <rect x="17" y="13" width="3" height="4" />
+                      }
                     }
                   </svg>
                 </span>
@@ -232,7 +361,12 @@
           </div>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <button (click)="back()" class="self-start rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Back</button>
+            <button
+              (click)="back()"
+              class="self-start rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              Back
+            </button>
             <button
               (click)="startGenerating()"
               class="rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-orange-200/60 transition-transform hover:scale-[1.02] sm:flex-1"
@@ -247,7 +381,9 @@
       @case (5) {
         <div class="animate-fade-in rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
           <p class="mb-1 text-sm text-slate-400">Step 5 of 5</p>
-          <h1 class="text-xl font-extrabold text-slate-900">Hang tight! We're creating your magic ✨</h1>
+          <h1 class="text-xl font-extrabold text-slate-900">
+            Hang tight! We're creating your magic ✨
+          </h1>
           <p class="mt-1 text-sm text-slate-400">This usually takes 30–60 seconds.</p>
 
           <div class="mt-8 grid items-center gap-8 md:grid-cols-[1fr_1fr]">
@@ -255,18 +391,33 @@
               @for (gs of genSteps; track gs.label; let i = $index) {
                 <li class="flex items-center gap-3 text-sm">
                   @if (i < genProgress()) {
-                    <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
-                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                    <span
+                      class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white"
+                    >
+                      <svg
+                        class="h-3.5 w-3.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
                     </span>
                     <span class="font-medium text-slate-700">{{ gs.label }}</span>
                   } @else if (i === genProgress()) {
                     <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                      <span class="h-4 w-4 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600"></span>
+                      <span
+                        class="h-4 w-4 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600"
+                      ></span>
                     </span>
                     <span class="font-semibold text-slate-800">{{ gs.label }}</span>
                   } @else {
-                    <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-200"></span>
+                    <span
+                      class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-200"
+                    ></span>
                     <span class="text-slate-400">{{ gs.label }}</span>
                   }
                 </li>
@@ -290,7 +441,11 @@
 
           @if (genProgress() >= genSteps.length) {
             <div class="mt-6 flex justify-end">
-              <a routerLink="/results" class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700">View Results →</a>
+              <a
+                routerLink="/results"
+                class="rounded-lg bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700"
+                >View Results →</a
+              >
             </div>
           }
         </div>

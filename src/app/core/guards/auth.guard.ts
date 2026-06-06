@@ -10,13 +10,12 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  router.navigate(['/login'], {
+  return router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url },
   });
-  return false;
 };
 
-export const publicGuard: CanActivateFn = (route, state) => {
+export const publicGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -24,6 +23,5 @@ export const publicGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  router.navigate(['/dashboard']);
-  return false;
+  return router.createUrlTree(['/dashboard']);
 };

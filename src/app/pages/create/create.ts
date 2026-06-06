@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Logo } from '../shared/logo/logo';
+import { UploadImage } from '../dashboard/components/upload-image/upload-image';
 
 interface ProductType {
   label: string;
@@ -22,7 +23,7 @@ interface GenStep {
 
 @Component({
   selector: 'ltz-create',
-  imports: [RouterLink, Logo],
+  imports: [RouterLink, Logo, UploadImage],
   templateUrl: './create.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -32,7 +33,7 @@ export class CreateComponent implements OnDestroy {
 
   projectName = signal<string | undefined>(undefined);
   selectedProduct = signal<string | undefined>('Postcard');
-
+  uploadedImage = signal<string | null>(null);
   uploadTips = [
     'Use high quality images',
     'Good lighting',
@@ -150,5 +151,9 @@ export class CreateComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearTimer();
+  }
+
+  onImageUploaded(image: string) {
+    this.uploadedImage.set(image);
   }
 }
