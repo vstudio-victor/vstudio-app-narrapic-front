@@ -46,6 +46,7 @@
     "@openapitools/openapi-generator-cli": "^2.27.0",
     "angular-eslint": "21.1.0",
     "autoprefixer": "^10.4.23",
+    "dotenv": "^17.4.2",
     "eslint": "^9.39.1",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.6",
