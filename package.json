@@ -3,9 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "npm run generate:api:all",
     "start": "ng serve",
     "build": "ng build",
+    "postinstall": "node scripts/setup-config.js",
     "watch": "ng build --watch --configuration development",
+    "generate:api:narra-pic-api": "npx openapi-generator-cli generate -i src/contract/narra-pic-api.yaml -g typescript-angular -o src/app/core/data-services/narra-pic-api --additional-properties=providedInRoot=true",
+    "generate:api:all": "npm run generate:api:narra-pic-api",
     "test": "ng test"
   },
   "prettier": {
@@ -23,12 +27,15 @@
   "private": true,
   "packageManager": "npm@10.9.2",
   "dependencies": {
+    "@angular-eslint/schematics": "^21.1.0",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
+    "browser-image-compression": "^2.0.2",
+    "exifr": "^7.1.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -36,8 +43,15 @@
     "@angular/build": "^21.0.4",
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.0",
+    "@openapitools/openapi-generator-cli": "^2.27.0",
+    "angular-eslint": "21.1.0",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.1",
     "jsdom": "^27.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
     "typescript": "~5.9.2",
+    "typescript-eslint": "8.47.0",
     "vitest": "^4.0.8"
   }
 }

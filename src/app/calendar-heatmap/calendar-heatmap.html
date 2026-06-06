@@ -1,0 +1,114 @@
+<div class="max-w-sm">
+  <!-- Current Month Display -->
+  <div class="bg-white rounded-lg shadow-lg p-4">
+    <!-- Month Navigation -->
+    <div class="flex items-center justify-between gap-2">
+      <div class="text-center p-2">
+        <h3 class="text-md font-semibold text-gray-800">
+          {{ currentMonth?.name }} {{ selectedYear }}
+        </h3>
+      </div>
+
+      <div class="inline-flex gap-2 mr-5">
+        <button (click)="previousMonth()" [disabled]="currentMonthIndex === 0"
+          [class.opacity-50]="currentMonthIndex === 0" [class.cursor-not-allowed]="currentMonthIndex === 0"
+          class="py-1 px-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white border border-blue-500 hover:border-transparent rounded">
+          <svg [class.w-2]="!isExpanded" [class.h-2]="!isExpanded" [class.w-3]="isExpanded" [class.h-3]="isExpanded"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <button (click)="nextMonth()" [disabled]="currentMonthIndex === 11"
+          [class.opacity-50]="currentMonthIndex === 11" [class.cursor-not-allowed]="currentMonthIndex === 11"
+          class="size-xs py-1 px-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white border border-blue-500 hover:border-transparent rounded">
+          <svg [class.w-2]="!isExpanded" [class.h-2]="!isExpanded" [class.w-3]="isExpanded" [class.h-3]="isExpanded"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="grid grid-cols-7 gap-1 mb-2">
+      @for (day of weekdays; track $index) {
+      <div class="text-center text-gray-500 font-medium py-2 transition-all" [class.text-[10px]]="!isExpanded"
+        [class.text-xs]="isExpanded">
+        {{ day }}
+      </div>
+      }
+
+    </div>
+    <div>
+      <div class="flex flex-col transition-all" [class.gap-0.5]="!isExpanded" [class.gap-1]="isExpanded">
+
+        @for (week of currentMonth?.weeks; track $index) {
+        <div class="grid grid-cols-7 transition-all" [class.gap-0.5]="!isExpanded" [class.gap-1]="isExpanded">
+          @for (dayData of week; track $index) {
+          <div
+            class="aspect-square rounded flex items-center justify-center font-medium text-gray-800 border transition-all duration-200"
+            [class.text-xs]="!isExpanded" [class.text-sm]="isExpanded" [class.border-gray-100]="dayData.day !== null"
+            [class.border-transparent]="dayData.day === null" [class.cursor-pointer]="dayData.day !== null"
+            [class.hover:scale-110]="dayData.day !== null" [class.hover:border-gray-400]="dayData.day !== null"
+            [class.hover:z-10]="dayData.day !== null"
+            [class.weekend-stripes]="dayData.day !== null && isWeekend($index)"
+            [class.opacity-70]="dayData.day !== null && isWeekend($index)"
+            [style.background-color]="dayData.day !== null && !isWeekend($index) ? getColor(dayData.total) : ''"
+            (mouseenter)="onDayHover(dayData, $event, $index)" (mouseleave)="onDayLeave()">
+            @if (dayData.day !== null) {
+            <span>{{ dayData.day }}</span>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+    </div>
+
+    <div class="border-t border-gray-200 pb-4" [class.mt-6]="isExpanded" [class.pt-4]="isExpanded">
+      <div class="grid grid-cols-3">
+        <div class="text-center">
+          <p class="font-bold text-red-600 transition-all" [class.text-base]="!isExpanded" [class.text-lg]="isExpanded">
+            {{ getMonthSickTotal() }}</p>
+          <p class="text-xs text-gray-500">🤒 Sick</p>
+        </div>
+        <div class="text-center">
+          <p class="font-bold text-green-600 transition-all" [class.text-base]="!isExpanded"
+            [class.text-lg]="isExpanded">{{ getMonthHolidayTotal() }}</p>
+          <p class="text-xs text-gray-500">🏖️ Holiday</p>
+        </div>
+        <div class="text-center">
+          <p class="font-bold text-orange-600 transition-all" [class.text-base]="!isExpanded"
+            [class.text-lg]="isExpanded">{{ getMonthOtherTotal() }}</p>
+          <p class="text-xs text-gray-500">📋 Other</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (hoveredDay && hoveredDay.day !== null && tooltipPosition) {
+  <div [style.left.px]="tooltipPosition.x" [style.top.px]="tooltipPosition.y"
+    class="fixed bg-gray-900 bg-opacity-95 text-white px-4 py-3 rounded-lg text-xs shadow-xl z-50 pointer-events-none transform -translate-x-1/2 -translate-y-full -mt-2 min-w-[180px]">
+    <div class="space-y-1">
+      <div class="flex justify-between items-center">
+        <span class="font-semibold">Total Absent:</span>
+        <span class="text-blue-300 font-bold">{{ hoveredDay.total }}</span>
+      </div>
+      <div class="mt-2 pt-2 border-t border-gray-700 space-y-1">
+        <div class="flex justify-between items-center">
+          <span>🤒 Sick:</span>
+          <span class="text-red-300">{{ hoveredDay.absenteeism.sick }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>🏖️ Holiday:</span>
+          <span class="text-green-300">{{ hoveredDay.absenteeism.holiday }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>📋 Other:</span>
+          <span class="text-orange-300">{{ hoveredDay.absenteeism.other }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

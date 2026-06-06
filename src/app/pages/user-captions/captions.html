@@ -1,0 +1,336 @@
+<div class="mt-16">
+  <div class="bg-[#2a3441] rounded-lg p-6 shadow-lg">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">My Captions</h1>
+        <p class="text-gray-400">View and manage your generated content</p>
+      </div>
+
+      <!-- Filters and Search -->
+      <div class="bg-[#1e2732] rounded-lg p-4 mb-6 border border-[#3a4651]">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Search -->
+          <div class="flex-1">
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                [value]="searchQuery()"
+                (input)="searchQuery.set($any($event.target).value)"
+                placeholder="Search captions, hashtags..."
+                class="w-full bg-[#2a3441] text-white pl-10 pr-4 py-2 rounded-lg border border-[#3a4651] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors placeholder-gray-500"
+              />
+            </div>
+          </div>
+
+          <!-- Platform Filter -->
+          <div class="flex gap-2">
+            @for (btn of buttons; track btn.label) {
+              <button
+                (click)="selectedFilter.set(btn.label)"
+                [class.bg-blue-600]="selectedFilter() === btn.label"
+                [class.bg-[#2a3441]]="selectedFilter() !== btn.label"
+                class="px-4 py-2 rounded-lg border border-[#3a4651] text-white hover:border-blue-500 transition-colors"
+              >
+                {{ btn.label }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="bg-[#1e2732] rounded-lg p-4 border border-[#3a4651] animate-pulse">
+              <div class="w-full h-48 bg-gray-700 rounded-lg mb-4"></div>
+              <div class="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+              <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Empty State -->
+      @if (!isLoading() && filteredCaptions().length === 0) {
+        <div class="bg-[#1e2732] rounded-lg p-12 border border-[#3a4651] border-dashed text-center">
+          <div
+            class="w-20 h-20 mx-auto mb-6 bg-blue-500/10 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-10 h-10 text-blue-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-white text-xl font-semibold mb-6">No Captions Found</h3>
+          <p class="text-gray-400 mb-6">Start generating captions to see them here</p>
+          @if (!searchQuery()) {
+            <button
+              (click)="generate()"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+            >
+              Generate Your First Caption
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Captions Grid -->
+      @if (!isLoading() && filteredCaptions().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (caption of filteredCaptions(); track caption.id) {
+            <div
+              class="bg-[#1e2732] rounded-lg overflow-hidden border border-[#3a4651] hover:border-blue-500 transition-colors group"
+            >
+              <!-- Image -->
+              <div class="relative h-48 bg-gray-800 overflow-hidden">
+                <img
+                  [src]="caption.image_url"
+                  [alt]="caption.altText"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute top-2 right-2 flex gap-2">
+                  <span
+                    class="px-2 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full"
+                  >
+                    {{ caption.platform }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="p-4">
+                <p class="text-gray-300 text-sm mb-3 line-clamp-2">{{ caption.shortCaption }}</p>
+
+                <!-- Hashtags Preview -->
+                <div class="flex flex-wrap gap-1 mb-3">
+                  @for (tag of caption.hashtags!.slice(0, 3); track tag) {
+                    <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">{{
+                      tag
+                    }}</span>
+                  }
+                  @if (caption.hashtags!.length > 3) {
+                    <span class="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded-full">
+                      +{{ caption.hashtags!.length - 3 }}
+                    </span>
+                  }
+                </div>
+
+                <!-- Footer -->
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-3">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {{ formatDate(caption.created_at!) }}
+                  </span>
+                  <!-- <span class="capitalize">{{ caption.style }}</span> -->
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                  <button
+                    (click)="viewCaption(caption)"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    View Details
+                  </button>
+                  <button
+                    (click)="deleteCaption(caption.id)"
+                    class="bg-red-600/20 hover:bg-red-600/30 text-red-400 py-2 px-4 rounded-lg transition-colors"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  @if (selectedCaption()) {
+    <div
+      class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      (click)="closeModal()"
+    >
+      <div
+        class="bg-[#1e2732] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-[#3a4651]"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Modal Header -->
+        <div
+          class="sticky top-0 bg-[#1e2732] border-b border-[#3a4651] p-4 flex items-center justify-between z-10"
+        >
+          <h2 class="text-white text-xl font-bold">Caption Details</h2>
+          <button (click)="closeModal()" class="text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Image -->
+
+          <div class="relative h-56 w-56 bg-gray-800 overflow-hidden">
+            <img
+              [src]="selectedCaption()!.image_url"
+              [alt]="selectedCaption()!.altText"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <!-- Long Caption -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-white font-semibold text-lg">Description</h3>
+              <button
+                (click)="copyToClipboard(selectedCaption()!.description!)"
+                class="text-gray-400 hover:text-white transition-colors"
+              >
+                @if (copiedId() === 'long') {
+                  <span class="text-green-400 text-sm">Copied!</span>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                }
+              </button>
+            </div>
+            <p class="text-gray-300 whitespace-pre-line">{{ selectedCaption()!.description }}</p>
+          </div>
+
+          <!-- Short Caption -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-white font-semibold text-lg">Short Caption</h3>
+              <button
+                (click)="copyToClipboard(selectedCaption()!.shortCaption!, 'short')"
+                class="text-gray-400 hover:text-white transition-colors"
+              >
+                @if (copiedId() === 'short') {
+                  <span class="text-green-400 text-sm">Copied!</span>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                }
+              </button>
+            </div>
+            <p class="text-gray-300">{{ selectedCaption()!.shortCaption }}</p>
+          </div>
+
+          <!-- Alt Text -->
+          <div class="mb-6">
+            <h3 class="text-white font-semibold text-lg mb-3">Alt Text</h3>
+            <p class="text-gray-300">{{ selectedCaption()!.altText }}</p>
+          </div>
+
+          <!-- Hashtags -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-white font-semibold text-lg">Hashtags</h3>
+              <button
+                (click)="copyToClipboard(selectedCaption()!.hashtags!.join(' '), 'hashtags')"
+                class="text-gray-400 hover:text-white transition-colors"
+              >
+                @if (copiedId() === 'hashtags') {
+                  <span class="text-green-400 text-sm">Copied!</span>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                }
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @for (tag of selectedCaption()!.hashtags; track tag) {
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">{{
+                  tag
+                }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- Meta Info -->
+          <div
+            class="border-t border-[#3a4651] pt-4 flex items-center justify-between text-sm text-gray-400"
+          >
+            <div class="flex items-center gap-4">
+              <span
+                >Platform:
+                <strong class="text-white capitalize">{{
+                  selectedCaption()!.platform
+                }}</strong></span
+              >
+              <span
+                >Style:
+                <strong class="text-white capitalize">
+                  <!-- {{ selectedCaption()!.style }} --></strong
+                ></span
+              >
+            </div>
+            <span>{{ formatDate(selectedCaption()!.created_at!) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,68 @@
+<div class="bg-[#2a3441] rounded-lg p-6 shadow-lg">
+  <h2 class="text-white text-2xl font-semibold mb-6">Generate Captions</h2>
+  <form [formGroup]="form.innerForm">
+    <!-- Left side - Upload Image -->
+    <div class="flex items-start justify-evenly">
+      <div class="w-1/2 h-full rounded-xl overflow-hidden shrink-0">
+        <ltz-upload-image class="w-full h-full" formControlName="imageUrl"></ltz-upload-image>
+      </div>
+
+      <div class="flex flex-col">
+        <!-- Style Dropdown -->
+        <ltz-style-selector formControlName="style"></ltz-style-selector>
+
+        <ltz-platform-selector
+          formControlName="platform"
+          [isPremiumUser]="false"
+        ></ltz-platform-selector>
+
+        <div class="mb-6">
+          <label class="text-white text-base font-medium mb-3 block">Your Prompt</label>
+          <textarea
+            formControlName="prompt"
+            placeholder="e.g. Create a caption for Instagram about a sunset photo"
+            rows="4"
+            class="w-full bg-[#1e2732] text-white px-4 py-3 rounded-lg border border-[#3a4651] hover:border-[#4a5661] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors placeholder-gray-500 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Generate Button -->
+        <button
+          type="button"
+          (click)="generateCaption()"
+          [disabled]="form.innerForm.invalid || isGenerating()"
+          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#2a3441]"
+        >
+          @if (!isGenerating()) {
+            <span>Generate</span>
+          }
+          @if (isGenerating()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg
+                class="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Generating...
+            </span>
+          }
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

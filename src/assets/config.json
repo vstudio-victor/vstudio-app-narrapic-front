@@ -1,0 +1,7 @@
+{
+  "narraPicUrl": "http://localhost:3000",
+  "production": false,
+  "env": "DZN",
+  "version": "1.0.0",
+  "availableLang": "fr-FR"
+}

@@ -1,0 +1,152 @@
+<!-- Top Row -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+      <!-- Upcoming Absences -->
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Upcoming Absences</h3>
+        <div class="space-y-3">
+          <div *ngFor="let absence of upcomingAbsences" class="flex items-start gap-2">
+            <span class="text-blue-600 mt-1">•</span>
+            <div>
+              <span class="font-medium text-gray-700">{{ absence.name }}:</span>
+              <span class="text-gray-600"> {{ absence.type }} ({{ absence.dates }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacity Forecast -->
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Capacity Forecast</h3>
+        <div class="mb-4">
+          <div class="text-sm text-gray-600 mb-2">Predicted Capacity Next Month:</div>
+          <div class="text-5xl font-bold text-blue-600">78%</div>
+        </div>
+        <div class="mt-4">
+          <div class="text-xs text-gray-600 mb-2">Plan Adjustments Needed</div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 70%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Row -->
+    <div class="grid grid-cols-3 gap-6 mb-6">
+      <!-- Team Absence Summary Chart -->
+      <div class="col-span-2 bg-white rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Team Absence Summary</h3>
+        <div class="h-64 flex items-end justify-around gap-2">
+          <div *ngFor="let month of absenceChartData" class="flex-1 flex flex-col items-center gap-1">
+            <div class="w-full flex flex-col items-center" style="height: 200px; justify-content: flex-end;">
+              <div class="w-full bg-blue-500 rounded-t" [style.height.%]="(month.sick / 12) * 100"></div>
+              <div class="w-full bg-green-500" [style.height.%]="(month.vacation / 12) * 100"></div>
+              <div class="w-full bg-orange-400 rounded-b" [style.height.%]="(month.other / 12) * 100"></div>
+            </div>
+            <span class="text-xs text-gray-600 mt-2">{{ month.month }}</span>
+          </div>
+        </div>
+        <div class="flex justify-center gap-6 mt-4 text-sm">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-green-500 rounded"></div>
+            <span class="text-gray-600">Sick Leave</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-blue-500 rounded"></div>
+            <span class="text-gray-600">Vacation</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-orange-400 rounded"></div>
+            <span class="text-gray-600">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Absentees -->
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Absentees</h3>
+        <div class="space-y-3">
+          <div *ngFor="let person of topAbsentees; let i = index" class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-gray-700">{{ i + 1 }}.</span>
+              <span class="text-gray-700">{{ person.name }}:</span>
+            </div>
+            <span class="font-semibold text-gray-800">{{ person.days }} Days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Capacity vs Objectives -->
+      <div class="col-span-2 bg-white rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Capacity vs Objectives</h3>
+        <div class="h-64 relative">
+          <svg class="w-full h-full" viewBox="0 0 700 250">
+            <line x1="50" y1="210" x2="650" y2="210" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="50" y1="160" x2="650" y2="160" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="50" y1="110" x2="650" y2="110" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="50" y1="60" x2="650" y2="60" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="50" y1="10" x2="650" y2="10" stroke="#e5e7eb" stroke-width="1" />
+
+            <polyline points="70,130 150,90 230,100 310,85 390,95 470,100 550,70" fill="none" stroke="#10b981"
+              stroke-width="3" />
+            <polyline points="70,150 150,120 230,130 310,110 390,120 470,125 550,95" fill="none" stroke="#f97316"
+              stroke-width="3" />
+
+            <text x="20" y="15" class="text-xs fill-gray-600">120%</text>
+            <text x="30" y="65" class="text-xs fill-gray-600">90%</text>
+            <text x="30" y="115" class="text-xs fill-gray-600">60%</text>
+            <text x="35" y="215" class="text-xs fill-gray-600">0%</text>
+
+            <text x="50" y="235" class="text-xs fill-gray-600">Jan</text>
+            <text x="130" y="235" class="text-xs fill-gray-600">Feb</text>
+            <text x="210" y="235" class="text-xs fill-gray-600">Mar</text>
+            <text x="290" y="235" class="text-xs fill-gray-600">Apr</text>
+            <text x="370" y="235" class="text-xs fill-gray-600">May</text>
+            <text x="450" y="235" class="text-xs fill-gray-600">Jun</text>
+            <text x="530" y="235" class="text-xs fill-gray-600">Jun</text>
+          </svg>
+        </div>
+        <div class="flex justify-center gap-6 mt-4 text-sm">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-0.5 bg-green-500"></div>
+            <span class="text-gray-600">Available Capacity</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-0.5 bg-orange-500"></div>
+            <span class="text-gray-600">Planned Objectives</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-6">
+        <!-- Absence Heatmap -->
+        <div class="bg-white rounded-xl p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Absence Heatmap</h3>
+<!--           <ltz-calendar-heatmap></ltz-calendar-heatmap>
+ -->          <div class="flex items-center justify-center text-xs gap-2 text-gray-600 m-3">
+            <span>Less</span>
+            <div class="flex gap-1">
+              <div class="w-3 h-3 rounded-sm border border-gray-200" style="background-color: #eff6ff"></div>
+              <div class="w-3 h-3 rounded-sm border border-gray-200" style="background-color: #bfdbfe"></div>
+              <div class="w-3 h-3 rounded-sm border border-gray-200" style="background-color: #60a5fa"></div>
+              <div class="w-3 h-3 rounded-sm border border-gray-200" style="background-color: #3b82f6"></div>
+              <div class="w-3 h-3 rounded-sm border border-gray-200" style="background-color: #1e40af"></div>
+            </div>
+            <span>More</span>
+          </div>
+        </div>
+
+        <!-- Prediction Insights -->
+        <div class="bg-white rounded-xl p-6 shadow-sm">
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Prediction Insights</h3>
+          <div class="space-y-2">
+            <div class="text-blue-600 font-semibold text-sm">Upcoming Risk: June</div>
+            <p class="text-xs text-gray-600">High Sick Leave Expected Based on Historical Trends</p>
+            <p class="text-xs text-blue-600 font-medium">Consider Adjusting Targets</p>
+          </div>
+        </div>
+      </div>
+    </div>

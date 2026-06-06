@@ -1,0 +1,49 @@
+<div class="bg-[#2a3441] rounded-lg shadow-lg">
+  <div class="mb-6">
+    <label class="text-white text-base font-medium mb-3 block">Style</label>
+    <div class="relative">
+      <button type="button" (click)="toggleDropdown()"
+        class="w-full bg-[rgb(30,39,50)] text-white px-4 py-3 rounded-lg border border-[#3a4651] hover:border-[#4a5661] transition-colors flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <span>{{ selectedStyle() }}</span>
+        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="isDropdownOpen" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      @if (isDropdownOpen) {
+      <div
+        class="absolute z-10 w-full mt-2 bg-[#1e2732] border border-[#3a4651] rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        @for (option of styleOptions; track $index) {
+        <button type="button" (click)="selectStyle(option)"
+          class="w-full text-left px-4 py-3 hover:bg-[#2a3441] transition-colors flex items-center justify-between group relative"
+          [class.bg-[#2a3441]]="option.value === selectedStyle()">
+          <!-- Item Label - Grey for premium locked items -->
+          <span [class.text-gray-500]="option.isPremium && !isPremiumUser"
+            [class.text-white]="!(option.isPremium && !isPremiumUser)">
+            {{ option.label }}
+          </span>
+
+          @if (option.isPremium) {
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span
+              class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-medium rounded-full whitespace-nowrap">
+              <ltz-icon name="star" class="w-3 h-3 text-yellow-400" />
+              Pro
+            </span>
+
+            @if (!isPremiumUser) {
+            <ltz-icon name="lock" class="w-3 h-3 text-gray-500" />
+            }
+          </div>
+          }
+        </button>
+        }
+      </div>
+
+      }
+    </div>
+  </div>
+
+
+</div>

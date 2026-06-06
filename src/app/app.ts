@@ -1,12 +1,11 @@
-import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ServicesModule } from './services/services.module';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
+  selector: 'ltz-root',
+  imports: [RouterOutlet, ServicesModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  protected readonly title = signal('LetzSolutions');
-}
+export class App {}

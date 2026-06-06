@@ -1,0 +1,7 @@
+{
+  "narraPicUrl": "<YOUR_API_URL_HERE>",
+  "production": false,
+  "env": "DZN",
+  "version": "1.0.0",
+  "availableLang": "fr-FR"
+}

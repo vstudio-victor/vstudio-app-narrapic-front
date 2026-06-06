@@ -1,0 +1,690 @@
+<div class="min-h-screen bg-[#f7f7fb]">
+  <!-- Top bar -->
+  <header class="border-b border-slate-100 bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <a routerLink="/"
+        ><div class="flex items-center gap-2">
+          <img class="h-20 w-auto" src="../../assets/images/logo1.png" alt="" /></div
+      ></a>
+      <a routerLink="/dashboard" class="text-sm font-medium text-slate-400 hover:text-slate-600"
+        >Dashboard</a
+      >
+    </div>
+  </header>
+
+  <div class="mx-auto max-w-6xl px-6 py-8">
+    <!-- Project header -->
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-extrabold text-slate-900">{{ projectTitle }}</h1>
+          <button class="text-slate-300 hover:text-violet-500" aria-label="Edit title">
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+          </button>
+        </div>
+        <p class="mt-1 text-sm text-slate-400">{{ generatedAt }}</p>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-sm font-bold text-emerald-600 ring-4 ring-emerald-100"
+            >{{ seoScore }}</span
+          >
+          <div>
+            <p class="text-xs font-medium text-slate-400">SEO Score</p>
+            <p class="text-sm font-bold text-slate-800">{{ seoScore }} / 100</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="downloadAll()"
+          [disabled]="isDownloading()"
+          class="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          @if (isDownloading()) {
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            Preparing...
+          } @else {
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="m7 10 5 5 5-5" />
+              <path d="M12 15V3" />
+            </svg>
+            Download All
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mt-6 flex gap-1 overflow-x-auto border-b border-slate-200">
+      @for (tab of tabs; track tab.key) {
+        <button
+          (click)="setTab(tab.key)"
+          class="flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition"
+          [class]="
+            activeTab() === tab.key
+              ? 'border-violet-600 text-violet-700'
+              : 'border-transparent text-slate-500 hover:text-slate-700'
+          "
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            @switch (tab.icon) {
+              @case ('tag') {
+                <path
+                  d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"
+                />
+                <circle cx="7" cy="7" r="1.2" fill="currentColor" />
+              }
+              @case ('pin') {
+                <path d="M12 21s-6-5.7-6-10a6 6 0 0 1 12 0c0 4.3-6 10-6 10Z" />
+                <circle cx="12" cy="11" r="2" />
+              }
+              @case ('instagram') {
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="3.5" />
+                <circle cx="17" cy="7" r="1" fill="currentColor" />
+              }
+              @case ('image') {
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21" />
+              }
+              @case ('chart') {
+                <path d="M3 3v18h18" />
+                <rect x="7" y="11" width="3" height="6" />
+                <rect x="12" y="7" width="3" height="10" />
+                <rect x="17" y="13" width="3" height="4" />
+              }
+              @case ('file') {
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <path d="M14 2v6h6" />
+              }
+            }
+          </svg>
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Summary banner -->
+    <div
+      class="mt-6 grid gap-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm md:grid-cols-[1fr_1.3fr]"
+    >
+      <img
+        src="https://picsum.photos/seed/luxembourg-1/600/400"
+        alt="Artwork"
+        class="aspect-[3/2] w-full rounded-xl object-cover"
+      />
+      <div>
+        <h2 class="text-lg font-bold text-slate-900">
+          Great job! Your listing is SEO-optimized and ready to publish.
+        </h2>
+        <ul class="mt-4 space-y-2.5">
+          @for (check of summaryChecks; track check) {
+            <li class="flex items-center gap-2 text-sm text-slate-600">
+              <span
+                class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+              >
+                <svg
+                  class="h-3 w-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </span>
+              {{ check }}
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tab content -->
+    <div id="tab-content" class="mt-6 scroll-mt-6">
+      @switch (activeTab()) {
+        <!-- ===== Etsy Listing ===== -->
+        @case ('etsy') {
+          <div
+            class="animate-fade-in grid gap-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm lg:grid-cols-[1.4fr_1fr]"
+          >
+            <div>
+              <h3 class="text-base font-bold text-slate-800">Etsy Listing</h3>
+              <p class="mb-5 text-sm text-slate-400">
+                Copy or edit your optimized listing content.
+              </p>
+
+              <div class="mb-5">
+                <div class="mb-1 flex items-center justify-between">
+                  <label class="text-sm font-semibold text-slate-700">Etsy Title</label>
+                  <span class="text-xs text-slate-400">140 characters</span>
+                </div>
+                <div class="relative rounded-lg border border-slate-200 p-3">
+                  <p class="pr-16 text-sm text-slate-700">{{ etsyTitle }}</p>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">116 / 140</span>
+                    <button
+                      (click)="copy(etsyTitle, 'etsy-title')"
+                      class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700"
+                    >
+                      @if (copiedKey() === 'etsy-title') {
+                        <svg
+                          class="h-3.5 w-3.5 text-emerald-600"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                        <span class="text-emerald-600">Copied!</span>
+                      } @else {
+                        <svg
+                          class="h-3.5 w-3.5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <rect x="9" y="9" width="13" height="13" rx="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        Copy
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-1 block text-sm font-semibold text-slate-700">Description</label>
+                <div class="relative rounded-lg border border-slate-200 p-3">
+                  <p class="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                    {{ etsyDescription }}
+                  </p>
+                  <div class="mt-2 flex justify-end">
+                    <button
+                      (click)="copy(etsyDescription, 'etsy-desc')"
+                      class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700"
+                    >
+                      @if (copiedKey() === 'etsy-desc') {
+                        <svg
+                          class="h-3.5 w-3.5 text-emerald-600"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                        <span class="text-emerald-600">Copied!</span>
+                      } @else {
+                        <svg
+                          class="h-3.5 w-3.5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <rect x="9" y="9" width="13" height="13" rx="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        Copy
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800">
+                  Tags <span class="font-normal text-slate-400">({{ tags.length }})</span>
+                </h3>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @for (tag of tags; track tag) {
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700"
+                  >
+                    {{ tag }}
+                    <svg
+                      class="h-3 w-3 text-violet-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  </span>
+                }
+              </div>
+              <button
+                (click)="copy(tagsText, 'tags')"
+                class="mt-4 w-full rounded-lg border border-slate-200 py-2 text-sm font-semibold transition hover:bg-slate-50"
+                [class]="
+                  copiedKey() === 'tags'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                    : 'text-slate-600'
+                "
+              >
+                {{ copiedKey() === 'tags' ? 'Copied!' : 'Copy All Tags' }}
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ===== Pinterest Pins ===== -->
+        @case ('pinterest') {
+          <div class="animate-fade-in rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+            <h3 class="mb-4 text-base font-bold text-slate-800">Pinterest Pins</h3>
+
+            <div class="mb-5 flex gap-2">
+              @for (pin of pins; track pin.id) {
+                <button
+                  (click)="setPin(pin.id)"
+                  class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
+                  [class]="
+                    activePin() === pin.id
+                      ? 'bg-violet-600 text-white'
+                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                  "
+                >
+                  Pin {{ pin.id }}
+                </button>
+              }
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-[1fr_1.4fr]">
+              <img
+                [src]="'https://picsum.photos/seed/' + currentPin.seed + '/420/620'"
+                alt="Pinterest pin"
+                class="aspect-[2/3] w-full rounded-xl object-cover"
+              />
+
+              <div class="space-y-5">
+                <div>
+                  <div class="mb-1 flex items-center justify-between">
+                    <label class="text-sm font-semibold text-slate-700">Pin Title</label>
+                    <button
+                      (click)="copy(currentPin.title, 'pin-title')"
+                      class="inline-flex items-center gap-1 text-xs font-semibold hover:text-violet-700"
+                      [class]="copiedKey() === 'pin-title' ? 'text-emerald-600' : 'text-violet-600'"
+                    >
+                      {{ copiedKey() === 'pin-title' ? 'Copied!' : 'Copy' }}
+                    </button>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
+                    {{ currentPin.title }}
+                  </div>
+                  <p class="mt-1 text-right text-xs text-slate-400">47 / 100</p>
+                </div>
+
+                <div>
+                  <div class="mb-1 flex items-center justify-between">
+                    <label class="text-sm font-semibold text-slate-700">Pin Description</label>
+                    <button
+                      (click)="copy(currentPin.description, 'pin-desc')"
+                      class="inline-flex items-center gap-1 text-xs font-semibold hover:text-violet-700"
+                      [class]="copiedKey() === 'pin-desc' ? 'text-emerald-600' : 'text-violet-600'"
+                    >
+                      {{ copiedKey() === 'pin-desc' ? 'Copied!' : 'Copy' }}
+                    </button>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 p-3 text-sm text-slate-600">
+                    {{ currentPin.description }}
+                  </div>
+                  <p class="mt-1 text-right text-xs text-slate-400">90 / 500</p>
+                </div>
+
+                <div>
+                  <div class="mb-1 flex items-center justify-between">
+                    <label class="text-sm font-semibold text-slate-700">Keywords</label>
+                    <button
+                      (click)="copy(currentPin.keywords, 'pin-keywords')"
+                      class="inline-flex items-center gap-1 text-xs font-semibold hover:text-violet-700"
+                      [class]="
+                        copiedKey() === 'pin-keywords' ? 'text-emerald-600' : 'text-violet-600'
+                      "
+                    >
+                      {{ copiedKey() === 'pin-keywords' ? 'Copied!' : 'Copy' }}
+                    </button>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 p-3 text-sm text-slate-600">
+                    {{ currentPin.keywords }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <button
+                (click)="downloadPins()"
+                [disabled]="isDownloading()"
+                class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-70"
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="m7 10 5 5 5-5" />
+                  <path d="M12 15V3" />
+                </svg>
+                {{ isDownloading() ? 'Preparing...' : 'Download All Pins' }}
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ===== Instagram ===== -->
+        @case ('instagram') {
+          <div
+            class="animate-fade-in grid gap-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm md:grid-cols-[1fr_1.3fr]"
+          >
+            <img
+              src="https://picsum.photos/seed/luxembourg-1/600/600"
+              alt="Instagram post"
+              class="aspect-square w-full rounded-xl object-cover"
+            />
+            <div>
+              <h3 class="mb-3 text-base font-bold text-slate-800">Instagram Caption</h3>
+              <div
+                class="rounded-lg border border-slate-200 p-3 text-sm leading-relaxed text-slate-600"
+              >
+                {{ instagramCaption }}
+              </div>
+              <h4 class="mb-2 mt-4 text-sm font-semibold text-slate-700">Hashtags</h4>
+              <div class="rounded-lg border border-slate-200 p-3 text-sm text-violet-600">
+                {{ instagramHashtags }}
+              </div>
+              <button
+                (click)="copy(instagramCaption + '\n\n' + instagramHashtags, 'ig-caption')"
+                class="mt-4 inline-flex items-center gap-1 rounded-lg border px-4 py-2 text-sm font-semibold transition hover:bg-slate-50"
+                [class]="
+                  copiedKey() === 'ig-caption'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                    : 'border-slate-200 text-slate-600'
+                "
+              >
+                {{ copiedKey() === 'ig-caption' ? 'Copied!' : 'Copy Caption' }}
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ===== Mockups ===== -->
+        @case ('mockups') {
+          <div class="animate-fade-in rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+            <h3 class="mb-4 text-base font-bold text-slate-800">Mockups</h3>
+
+            <div class="mb-5 flex flex-wrap gap-2">
+              @for (filter of mockupFilters; track filter) {
+                <button
+                  (click)="setFilter(filter)"
+                  class="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition"
+                  [class]="
+                    activeFilter() === filter
+                      ? 'bg-violet-600 text-white'
+                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                  "
+                >
+                  {{ filter }}
+                  <span
+                    class="rounded-full px-1.5 text-xs font-semibold"
+                    [class]="
+                      activeFilter() === filter
+                        ? 'bg-white/20 text-white'
+                        : 'bg-white text-slate-400'
+                    "
+                    >{{ mockupCount(filter) }}</span
+                  >
+                </button>
+              }
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              @for (mock of filteredMockups(); track mock.seed; let i = $index) {
+                <div class="group relative overflow-hidden rounded-xl border border-slate-100">
+                  <img
+                    [src]="'https://picsum.photos/seed/' + mock.seed + '/500/400'"
+                    [alt]="mock.category + ' mockup'"
+                    class="aspect-[5/4] w-full object-cover"
+                  />
+                  <span
+                    class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm"
+                    >{{ mock.category }}</span
+                  >
+                  <button
+                    (click)="downloadImage(mock.seed, 'mockup-' + (i + 1) + '.jpg')"
+                    class="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-violet-600 shadow-md transition hover:bg-white"
+                    aria-label="Download mockup"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <path d="m7 10 5 5 5-5" />
+                      <path d="M12 15V3" />
+                    </svg>
+                  </button>
+                </div>
+              } @empty {
+                <p class="col-span-full py-8 text-center text-sm text-slate-400">
+                  No mockups in this category.
+                </p>
+              }
+            </div>
+
+            <div class="mt-6 flex justify-center">
+              <button
+                (click)="downloadMockups()"
+                [disabled]="isDownloading()"
+                class="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:opacity-70"
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="m7 10 5 5 5-5" />
+                  <path d="M12 15V3" />
+                </svg>
+                {{ isDownloading() ? 'Preparing...' : 'Download All Mockups' }}
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ===== Files ===== -->
+        @case ('files') {
+          <div class="animate-fade-in rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+            <h3 class="mb-4 text-base font-bold text-slate-800">Generated Files</h3>
+            <ul class="divide-y divide-slate-100">
+              @for (file of files; track file.name) {
+                <li class="flex items-center gap-3 py-3">
+                  <span
+                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100 text-violet-600"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      @switch (file.icon) {
+                        @case ('tag') {
+                          <path
+                            d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"
+                          />
+                          <circle cx="7" cy="7" r="1.2" fill="currentColor" />
+                        }
+                        @case ('pin') {
+                          <path d="M12 21s-6-5.7-6-10a6 6 0 0 1 12 0c0 4.3-6 10-6 10Z" />
+                          <circle cx="12" cy="11" r="2" />
+                        }
+                        @case ('instagram') {
+                          <rect x="3" y="3" width="18" height="18" rx="5" />
+                          <circle cx="12" cy="12" r="3.5" />
+                        }
+                        @case ('image') {
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="9" cy="9" r="2" />
+                          <path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21" />
+                        }
+                        @case ('chart') {
+                          <path d="M3 3v18h18" />
+                          <rect x="7" y="11" width="3" height="6" />
+                          <rect x="12" y="7" width="3" height="10" />
+                        }
+                      }
+                    </svg>
+                  </span>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-slate-700">{{ file.name }}</p>
+                    <p class="text-xs text-slate-400">{{ file.detail }}</p>
+                  </div>
+                  <button
+                    (click)="downloadFile(file.name)"
+                    [disabled]="isDownloading()"
+                    class="text-violet-600 hover:text-violet-700 disabled:opacity-70"
+                    aria-label="Download"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <path d="m7 10 5 5 5-5" />
+                      <path d="M12 15V3" />
+                    </svg>
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Footer actions -->
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+      <button
+        class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+      >
+        <svg
+          class="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        Regenerate All
+      </button>
+      <div class="flex gap-3">
+        <a
+          routerLink="/create"
+          class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+          >Edit Project</a
+        >
+        <button
+          type="button"
+          (click)="downloadAll()"
+          [disabled]="isDownloading()"
+          class="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {{ isDownloading() ? 'Preparing...' : 'Download All' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
