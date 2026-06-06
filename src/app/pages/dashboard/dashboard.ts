@@ -44,6 +44,8 @@ export class DashboardComponent {
     { label: 'Settings', icon: 'settings', link: '/settings' },
   ];
 
+  isMobileMenuOpen = false;
+
   projects: Project[] = [
     { title: 'Luxembourg Postcard', date: 'May 24, 2024', seed: 'luxembourg-1' },
     { title: 'Paris Vintage Print', date: 'May 13, 2024', seed: 'paris-2' },

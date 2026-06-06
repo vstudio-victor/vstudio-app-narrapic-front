@@ -1,6 +1,41 @@
+<!-- Mobile top bar -->
+<div
+  class="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 lg:hidden"
+>
+  <a routerLink="/">
+    <img class="h-8 w-auto" src="../../assets/images/logo1.png" alt="" />
+  </a>
+  <button
+    (click)="isMobileMenuOpen = true"
+    class="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+    aria-label="Open menu"
+  >
+    <svg
+      class="h-6 w-6"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </button>
+</div>
+
 <div class="flex min-h-screen bg-[#f7f7fb]">
-  <!-- Sidebar -->
-  <aside class="hidden w-64 flex-shrink-0 flex-col border-r border-slate-100 bg-white lg:flex">
+  <!-- Backdrop -->
+  @if (isMobileMenuOpen) {
+    <div class="fixed inset-0 z-30 bg-black/40 lg:hidden" (click)="isMobileMenuOpen = false"></div>
+  }
+
+  <aside
+    class="fixed inset-y-0 left-0 z-40 flex w-64 flex-shrink-0 flex-col border-r border-slate-100 bg-white transition-transform duration-300 lg:static lg:translate-x-0 lg:z-auto"
+    [class.-translate-x-full]="!isMobileMenuOpen"
+  >
     <div class="px-6 py-6">
       <a routerLink="/"
         ><div class="flex items-center gap-2">
