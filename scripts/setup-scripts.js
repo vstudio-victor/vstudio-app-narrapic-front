@@ -2,8 +2,8 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
-const templatePath = path.join(__dirname, '../src/assets/config/config.template.json');
-const configPath = path.join(__dirname, '../src/assets/config/config.json');
+const templatePath = path.join(__dirname, '../src/assets/config.template.json');
+const configPath = path.join(__dirname, '../src/assets/config.json');
 
 let config = fs.readFileSync(templatePath, 'utf8');
 
